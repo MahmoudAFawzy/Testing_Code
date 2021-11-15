@@ -1,0 +1,74 @@
+package workingWithElements;
+
+import static org.testng.Assert.assertEquals;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class WorkingWithAlerts {
+	
+	ChromeDriver driver;
+	@BeforeTest 
+	public void openURL() {
+		String chromePath = System.getProperty("user.dir")+"\\resources\\chromedriver.exe";
+		System.setProperty("webdriver.chrome.driver", chromePath);
+		driver = new ChromeDriver();
+		driver.navigate().to("http://cookbook.seleniumacademy.com/Alerts.html");
+	}
+	
+	
+	
+	@Test (priority = 1)
+	public void testAlert() {
+		WebElement buttonToOpenAlert = driver.findElement(By.id("simple"));
+		buttonToOpenAlert.click();
+		
+		Alert alert = driver.switchTo().alert();
+		//driver.switchTo().alert().accept();
+		String alertMsg = alert.getText();
+		assertEquals(alertMsg, "Hello! I am an alert box!");
+		alert.accept();
+		
+		WebElement buttonOpenConfirmBox = driver.findElement(By.id("confirm"));
+		buttonOpenConfirmBox.click();
+		Alert alertConfirmation = driver.switchTo().alert();
+		alertConfirmation.accept();
+		WebElement confirmationMessage = driver.findElement(By.id("demo"));
+		String message = confirmationMessage.getText();
+		assertEquals(message, "You Accepted Alert!");
+		
+		WebElement buttonOpenAlertWithInput = driver.findElement(By.id("prompt"));
+		buttonOpenAlertWithInput.click();
+		Alert alertWithInput = driver.switchTo().alert();
+		alertWithInput.sendKeys("Mahmoud Abbas");
+		alertWithInput.accept();
+		WebElement loggedUser = driver.findElement(By.id("prompt_demo"));
+		String loggedUserMsg = loggedUser.getText();
+		assertEquals(loggedUserMsg, "Hello Mahmoud Abbas! How are you today?");
+		
+		
+	}
+	
+	@Test (priority = 2)
+	public void testDismissAlert() {
+		WebElement buttonOpenConfirmBox = driver.findElement(By.id("confirm"));
+		buttonOpenConfirmBox.click();
+		Alert alertConfirmation = driver.switchTo().alert();
+		alertConfirmation.dismiss();
+		WebElement confirmationMessage = driver.findElement(By.id("demo"));
+		String message = confirmationMessage.getText();
+		assertEquals(message, "You Dismissed Alert!");
+	}
+	
+	
+	
+	@AfterTest
+	public void closeDriver() {
+		//driver.quit();
+	}
+}
