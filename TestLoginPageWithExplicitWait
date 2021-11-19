@@ -1,0 +1,138 @@
+package Elmohamdy.DashboardTestCases;
+
+import static org.testng.Assert.assertTrue;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class testLogin {
+
+	ChromeDriver driver;
+	@BeforeTest
+	public void openURL() {
+		String chromePath = System.getProperty("user.dir")+"\\resources\\chromedriver.exe";
+		System.setProperty("webdriver.chrome.driver", chromePath);
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.navigate().to("http://test.elmohamdy.com/admin/login");;
+	}
+
+	@Test (priority=3)
+	public void testLoginPage() {
+		WebElement email = driver.findElement(By.cssSelector("#loginForm > div:nth-child(2) > div > input"));
+		email.sendKeys("admin@restaurant.com");
+
+		WebElement password = driver.findElement(By.cssSelector("#loginForm > div:nth-child(3) > div > input"));
+		password.sendKeys("Ad@min$12=(3#456");
+
+		WebElement loginButton = driver.findElement(By.className("btn-custom"));
+		loginButton.click();
+
+		@SuppressWarnings("deprecation")
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.titleContains("الصفحة الرئيسية"));
+
+		assertTrue(driver.getTitle().startsWith("الصفحة"));
+
+		System.out.println("Logged in successfully");
+
+	}
+
+
+	@Test (priority = 2)
+
+	public void testLoginPageWithWrongEmail() { 
+		WebElement email =
+				driver.findElement(By.
+						cssSelector("#loginForm > div:nth-child(2) > div > input"));
+		email.sendKeys("admin@restaurant.com");
+
+		WebElement password = driver.findElement(By.
+				cssSelector("#loginForm > div:nth-child(3) > div > input"));
+		password.sendKeys("Ad@min$12=(3#458"); 
+
+		WebElement loginButton = driver.findElement(By.className("btn-custom"));
+		loginButton.click();
+		
+		email.clear();
+		password.clear();
+
+		@SuppressWarnings("deprecation")
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.titleContains("الصفحة الرئيسية"));
+
+		assertTrue(driver.getTitle().startsWith("الصفحة"));
+
+		System.out.println("Failed");
+		driver.quit();
+
+	}
+
+	@Test (priority = 1)
+	public void testLoginPageWithWrongPassword() { 
+
+		WebElement email =
+				driver.findElement(By.
+						cssSelector("#loginForm > div:nth-child(2) > div > input"));
+		email.sendKeys("admin@restaurant.com");
+
+		WebElement password = driver.findElement(By.
+				cssSelector("#loginForm > div:nth-child(3) > div > input"));
+		password.sendKeys("Ad@min$12=(3#459");
+
+		WebElement loginButton = driver.findElement(By.
+				cssSelector("#loginForm > div.form-group.text-center.m-t-30 > div > button")); 
+		loginButton.click();
+		
+		email.clear();
+		password.clear();
+
+		@SuppressWarnings("deprecation")
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.titleContains("الصفحة الرئيسية"));
+
+		assertTrue(driver.getTitle().startsWith("الصفحة"));
+
+		System.out.println("Failed");
+		driver.quit();
+	}
+
+	@Test (priority = 0)
+	public void testLoginPageWithWrongPasswordAndEmail() { 
+
+		WebElement
+		email = driver.findElement(By.
+				cssSelector("#loginForm > div:nth-child(2) > div > input"));
+		email.sendKeys("admin@restaurant.com");
+
+		WebElement password = driver.findElement(By.
+				cssSelector("#loginForm > div:nth-child(3) > div > input"));
+		password.sendKeys("Ad@min$12=(3#454"); 
+
+		WebElement loginButton = driver.findElement(By.className("btn-custom"));
+		loginButton.click();
+
+		email.clear();
+		password.clear();
+
+		@SuppressWarnings("deprecation")
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.titleContains("الصفحة الرئيسية"));
+
+		assertTrue(driver.getTitle().startsWith("الصفحة"));
+
+		System.out.println("Failed");
+	}
+
+
+	@AfterTest
+	public void closeDriver() {
+		driver.quit();
+	}
+}
