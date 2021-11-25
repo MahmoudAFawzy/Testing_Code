@@ -1,0 +1,118 @@
+package Elmohamdy.DashboardTestCases;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+public class testHomePage {
+
+	ChromeDriver driver;
+
+	@BeforeTest
+	public void openURL() {
+		String chromePath = System.getProperty("user.dir") + "\\resources\\chromedriver.exe";
+		System.setProperty("webdriver.chrome.driver", chromePath);
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.navigate().to("http://test.elmohamdy.com/admin/login");
+
+		WebElement email = driver.findElement(By.cssSelector("#loginForm > div:nth-child(2) > div > input"));
+		email.sendKeys("admin@restaurant.com");
+
+		WebElement password = driver.findElement(By.cssSelector("#loginForm > div:nth-child(3) > div > input"));
+		password.sendKeys("Ad@min$12=(3#456");
+
+		WebElement loginButton = driver.findElement(By.className("btn-custom"));
+		loginButton.click();
+	}
+
+
+	@Test (priority = 1)
+
+	public void topClientsTable() {
+
+		@SuppressWarnings("deprecation")
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.titleContains("الصفحة"));
+
+
+		WebElement webTable = driver.findElement(By.cssSelector("#wrapper > div.content-page > div > div > div > div > div > div > div.panel-body > div:nth-child(8) > table"));
+
+		List<WebElement> rows = webTable.findElements(By.tagName("tr"));
+
+		Assert.assertEquals(11, rows.size());
+
+		System.out.println("Number of rows: " + rows.size()); 
+
+	}
+
+
+
+	@SuppressWarnings("deprecation")
+
+	@Test public void openSideMenu() {
+
+		WebDriverWait wait = new WebDriverWait(driver, 15);
+		wait.until(ExpectedConditions.titleContains("الصفحة"));
+
+		WebElement settings = driver.findElement(By.cssSelector("#sidebar-menu > ul > li:nth-child(3) > a"));
+		settings.click();
+
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+		WebElement governorates = driver.findElement(By.xpath("//*[@id=\"sidebar-menu\"]/ul/li[3]/ul/li[7]/a"));
+		governorates.click();
+
+		WebElement addButton = driver.findElement(By.id("add_btn"));
+		addButton.click();
+
+		WebElement arabicInput = driver.findElement(By.id("name_ar"));
+		arabicInput.sendKeys("قنا");
+
+		WebElement englishInput = driver.findElement(By.id("name_en"));
+		englishInput.sendKeys("Qena");
+
+		WebElement saveButton = driver.findElement(By.cssSelector("#general-form > div.form-group.btn-left > button"));
+		saveButton.click();
+	}
+
+
+	/*
+	 * @SuppressWarnings("deprecation")
+	 * 
+	 * @Test public void governoratesAddition() {
+	 * 
+	 * driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); WebElement
+	 * tbl = driver.findElement(By.id("datatable"));
+	 * 
+	 * List<WebElement> rows = tbl.findElements(By.tagName("tr"));
+	 * 
+	 * for(int i=0; i<rows.size(); i++) { List<WebElement> cols =
+	 * rows.get(i).findElements(By.tagName("td")); for(int j=0; j<cols.size(); j++)
+	 * { System.out.println(cols.get(j).getText()); } }
+	 * 
+	 * 
+	 * WebElement lastAddedData =
+	 * driver.findElement(By.cssSelector("table tr:last-child td"));
+	 * 
+	 * 
+	 * 
+	 * }
+	 */
+
+
+
+	@AfterTest
+	public void closeDriver() {
+		driver.quit();
+	}
+}
